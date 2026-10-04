@@ -7,6 +7,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { MinesGrid } from "@/components/mines-grid"
 import { PredictionEngine } from "@/lib/prediction-engine"
 import { Instagram, Send } from "lucide-react"
+import { Show } from "@clerk/nextjs"
+import { AuthControls, AuthLoading, SignedOutWelcome } from "@/components/auth-controls"
 
 const currencies = [
   { value: "inr", label: "INR" },
@@ -41,7 +43,7 @@ const payoutMultipliers = {
   8: [1.46, 2.18, 3.35, 5.26, 8.5, 14.17, 24.47, 44.06, 88.12, 198.27, 594.81],
 }
 
-export default function MinesPredictor() {
+function MinesPredictor() {
   const [isActivated, setIsActivated] = useState(false)
   const [activationKey, setActivationKey] = useState("")
   const [serverSeed, setServerSeed] = useState("")
@@ -255,6 +257,10 @@ export default function MinesPredictor() {
 
   return (
     <div className="min-h-screen p-2 py-2 leading-7 text-[rgba(26,44,56,1)]" style={{ backgroundColor: "#1a2c38" }}>
+      <header className="mx-auto flex w-full max-w-5xl items-center justify-between px-1 pb-2" aria-label="Account navigation">
+        <span className="text-sm font-bold tracking-[0.2em] text-slate-200">GENIX</span>
+        <AuthControls />
+      </header>
       <div className={layoutConfig.wrapperClass}>
         <div className={`flex gap-0 ${layoutConfig.containerClass}`}>
           <div
@@ -424,5 +430,18 @@ export default function MinesPredictor() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function Page() {
+  return (
+    <>
+      <Show when="signed-out">
+        <SignedOutWelcome />
+      </Show>
+      <Show when="signed-in" fallback={<AuthLoading />}>
+        <MinesPredictor />
+      </Show>
+    </>
   )
 }
